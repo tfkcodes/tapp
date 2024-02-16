@@ -1,0 +1,254 @@
+import {Box, Grid, IconButton} from "@mui/material";
+import Table from "../../components/Tables";
+import AlertBar from "../../components/AlertBar";
+import {useRef, useState} from "react";
+import ModalPage from "../../components/ModalPage";
+import {capitalize, reportErrors} from "../../helpers";
+import {BASE_URL} from "../../constants";
+import useFetch from "../../hooks/useFetch";
+import SelectInputField from "../../components/SelectInputField";
+import HeaderDisplay from "../../components/HeaderDisplay";
+import Confirmation from "../../components/Confirmation";
+import {Delete, Edit, ListAltOutlined} from "@mui/icons-material";
+import {useNavigate} from "react-router-dom";
+
+
+export function AssignCourseAssessmentModal(props) {
+    const alert = useRef();
+    const [assessmentName, setAssessmentName] = useState();
+
+    const [params, setParams] = useState({
+        refresh: true,
+        employeeId: props?.employeeId && parseInt(props?.employeeId),
+        departmentId: undefined
+    });
+
+    const {data: courses} = useFetch("api/setup/course", {
+        page: 1,
+        limit: 25,
+    }, true, [], (response) => response.data.data.map(e => {
+        return {value: e.courseId, label: e.name, ...e};
+    }));
+
+    const remove = (item) => {
+        let data = {
+            status: "Inactive",
+            schoolId: window.$user.schoolId
+        };
+        if (item) {
+            window.axios
+                .put(`${BASE_URL}api/employee/assign-courses/${item?.id}`, data)
+                .then(response => {
+                    alert.current.showSuccess("Removed Successfully.");
+                    setTimeout(() => {
+                        props.refresh();
+                        props.modal.current.hide();
+                    }, 1000)
+                })
+                .catch(error => {
+                    reportErrors(alert.current, error);
+                });
+        }
+    }
+
+    const submit = (courseId) => {
+        let data = {
+            courseId: courseId && parseInt(courseId),
+            status: "Active",
+            schoolId: window.$user.schoolId
+        };
+        if (courseId) {
+            window.axios
+                .post(`${BASE_URL}api/employee/assign-courses`, data)
+                .then(response => {
+                    alert.current.showSuccess("Assign Successfully.");
+                    setTimeout(() => {
+                        props.refresh();
+                        props.modal.current.hide();
+                    }, 1000)
+                })
+                .catch(error => {
+                    reportErrors(alert.current, error);
+                });
+        }
+    }
+    return (
+        <Box>
+            <Grid sx={{display: "flex"}}>
+                <Box sx={{flexGrow: 1}}>
+                    <SelectInputField
+                        placeholder={"Assessment"}
+                        options={courses}
+                        onKeyDown={(value) => setAssessmentName(value)}
+                        onChange={(value) => setParams({...params, departmentId: value})}
+                    />
+                </Box>
+            </Grid>
+            <AlertBar ref={alert}/>
+            <Table
+                title={""}
+                url={"api/employee/assign-courses"}
+                params={params}
+                columns={[
+                    {
+                        id: 'code',
+                        label: 'Code',
+                        customRender: true,
+                        valueGetter: (item) => (item?.course?.code || ""),
+                    },
+                    {
+                        id: 'name',
+                        label: 'Name',
+                        customRender: true,
+                        valueGetter: (item) => capitalize(item?.course?.name || ""),
+                    },
+                    {
+                        id: 'action',
+                        label: 'Action',
+                        minWidth: 10,
+                        disabled: true,
+                        customRender: true,
+                        valueGetter: (item) => (
+                            <IconButton onClick={() => remove(item)}><Delete/></IconButton>),
+                    },
+                ]}
+            />
+        </Box>
+    );
+}
+
+export default function AssessmentCourse(props) {
+    const alert = useRef();
+    const navigate = useNavigate();
+    const modal = useRef();
+    const [departmentName, setDepartmentName] = useState();
+    const [courseName, setCourseName] = useState();
+    const [departmentId, setDepartmentId] = useState();
+    const [params, setParams] = useState({
+        refresh: true,
+    });
+
+    const refresh = () => {
+        setParams({...params, refresh: !params.refresh});
+    }
+
+    const {data: departments} = useFetch("api/setup/department", {
+        page: 1,
+        limit: 25,
+        name: departmentName
+    }, true, [], (response) => response.data.data.map(e => {
+        return {value: e.departmentId, label: e.name, ...e};
+    }));
+
+    const {data: courses} = useFetch("api/setup/course", {
+        page: 1,
+        limit: 25,
+        name: courseName,
+        departmentId: departmentId || 0,
+    }, true, [], (response) => response.data.data.map(e => {
+        return {value: e.courseId, label: e.name, ...e};
+    }));
+
+    const AssessmentModal = (data) => {
+        let component = <AssignCourseAssessmentModal refresh={refresh} data={data} modal={modal}/>;
+        modal.current.show("Assessment", component, "70%");
+    }
+
+    const ConfirmRemove = (item) => {
+        let component = <Confirmation
+            message={"Are you sure you want to remove this department?"}
+            handleOk={() => {
+                remove(item);
+                modal.current.hide();
+            }}
+            handleClose={() => modal.current.hide()}
+        />
+        modal.current.show("Confirmation", component, "30%")
+    }
+
+
+    const remove = (item) => {
+        let data = {
+            status: "Inactive",
+            schoolId: window.$user.schoolId
+        };
+        if (item) {
+            window.axios
+                .put(`${BASE_URL}api/employee/assign-courses/${item?.id}`, data)
+                .then(response => {
+                    alert.current.showSuccess("Removed Successfully.");
+                    setTimeout(() => {
+                        refresh();
+                    }, 1000)
+                })
+                .catch(error => {
+                    reportErrors(alert.current, error);
+                });
+        }
+    }
+
+    const submit = (courseId) => {
+        let data = {
+            courseId: courseId && parseInt(courseId),
+            employeeId: props?.employeeId && parseInt(props?.employeeId),
+            status: "Active",
+            schoolId: window.$user.schoolId
+        };
+        if (courseId) {
+            window.axios
+                .post(`${BASE_URL}api/employee/assign-courses`, data)
+                .then(response => {
+                    alert.current.showSuccess("Assign Successfully.");
+                    setTimeout(() => {
+                        refresh();
+                    }, 1000)
+                })
+                .catch(error => {
+                    reportErrors(alert.current, error);
+                });
+        }
+    }
+
+    return (
+        <Box>
+            <HeaderDisplay
+                title={"Courses"}
+                actionButton={false}
+            />
+            <Grid sx={{display: "flex"}}>
+                <Box sx={{flexGrow: 1}}>
+                    <SelectInputField
+                        placeholder={"Department"}
+                        options={departments}
+                        onKeyDown={(value) => setDepartmentName(value)}
+                        onChange={(value) => setParams({...params, departmentId: value})}
+                    />
+                </Box>
+            </Grid>
+            <AlertBar ref={alert}/>
+            <Table
+                title={""}
+                url={"api/employee/assign-courses"}
+                params={params}
+                columns={[
+                    {
+                        id: 'code',
+                        label: 'Code',
+                        customRender: true,
+                        valueGetter: (item) => (item?.course?.code || ""),
+                    },
+                    {
+                        id: 'name',
+                        label: 'Name',
+                        customRender: true,
+                        valueGetter: (item) => capitalize(item?.course?.name || ""),
+                    },
+                ]}
+
+                onRawClick={(item) => navigate(`/private/assessment/course/${item?.courseId}`)}
+            />
+            <ModalPage ref={modal}/>
+        </Box>
+    )
+        ;
+}
