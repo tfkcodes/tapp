@@ -57,6 +57,11 @@ export default function OtherLayout(props) {
             route: "/private/payments",
           },
           {
+            title: "Notifications",
+            icon: <DoubleArrowOutlined />,
+            route: "/private/all-notification",
+          },
+          {
             title: "Profile",
             icon: <DoubleArrowOutlined />,
             route: "/private/settings",

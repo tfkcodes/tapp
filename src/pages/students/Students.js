@@ -26,7 +26,7 @@ export function StudentModal(props) {
   const phoneInput = useRef();
   const genderInput = useRef();
   const dobInput = useRef();
-  const programIdInput = useRef();
+  const programInput = useRef();
   const levelInput = useRef();
   const academicYearInput = useRef();
 
@@ -34,14 +34,14 @@ export function StudentModal(props) {
   const [canSubmit, setCanSubmit] = useState(true);
   const [email, setEmail] = useState(props?.data?.email || "");
   const [phone, setPhone] = useState(props?.data?.phone || "");
-  const [programName, setProgramName] = useState();
-  const [academicYearName, setAcademicYearName] = useState();
-  const [academicYearStartDate, setAcademicYearStartDate] = useState("");
-  const [academicYearEndDate, setAcademicYearEndDate] = useState("");
 
-  const [programId, setProgramId] = useState(
-    props?.data?.programId || undefined
-  );
+  const [programName, setProgramName] = useState();
+
+  const [academicYearName, setAcademicYearName] = useState();
+  const [academicYears, setAcademicYears] = useState([]);
+
+  const [programId, setProgramId] = useState(props?.data?.programId);
+
   const [academicYearId, setAcademicYearId] = useState(
     props?.data?.academicYearId || undefined
   );
@@ -50,48 +50,57 @@ export function StudentModal(props) {
   const [gender, setGender] = useState(props?.data?.gender || "");
 
   const [educationLevel, setLevel] = useState(props?.data?.level || "");
+
   const { data: programs } = useFetch(
     "api/setup/program",
     {
       page: 1,
       limit: 25,
-      name: programName,
+      name: "",
     },
     true,
     [],
     (response) =>
       response.data.data.map((e) => {
-        return { value: e.departmentId, label: e.name, ...e };
+        return { value: e.programId, label: e.name, ...e };
       })
   );
 
-  const { data: academicYears } = useFetch(
+  useFetch(
     "api/setup/academic-year",
     {
       page: 1,
       limit: 25,
-      name: academicYearName,
     },
     true,
     [],
-    (response) =>
-      response.data.data.map((e) => {
+    (response) => {
+      const formattedAcademicYears = response.data.data.map((year) => {
+        const startDate = new Date(year.startDate);
+        const endDate = new Date(year.endDate);
+
         return {
-          value: e.academicYearId,
-          label: e.name,
-          startDate: e.startDate,
-          endDate: e.endDate,
-          ...e,
+          value: year.id,
+          label: `${startDate.getFullYear().toString()} / ${endDate
+            .getFullYear()
+            .toString()}`,
         };
-      })
+      });
+      setAcademicYears(formattedAcademicYears);
+    }
   );
   const ModalForm = () => {
+    if (!programId || !academicYearId) {
+      alert.current.showError("Program and Academic Year are required.");
+      return;
+    }
     let data = {
       name,
       phone,
       email,
       gender,
-
+      programId,
+      academicYearId,
       dob,
       scheme: "Student",
       level: educationLevel,
@@ -157,13 +166,19 @@ export function StudentModal(props) {
           value={email}
           onChange={(value) => setEmail(value)}
         />
-        <SelectInputField
-          ref={programIdInput}
-          label={"Program"}
+        <TextInputField
+          ref={emailInput}
+          label={"Student Number"}
           required={true}
+          value={email}
+          onChange={(value) => setEmail(value)}
+        />
+        <SelectInputField
+          ref={programInput}
+          required={true}
+          label={"Program"}
           options={programs}
           value={programId}
-          onKeyDown={(value) => setProgramName(value)}
           onChange={(value) => setProgramId(value)}
         />
         <SelectInputField
@@ -205,18 +220,6 @@ export function StudentModal(props) {
           ]}
           onChange={(value) => setLevel(value)}
         />
-        {/* <SelectInputField
-          ref={academicYearInput}
-          label={"Academic Year"}
-          required={true}
-          options={[
-            { label: "2020", value: "2020" },
-            { label: "2020", value: "2020" },
-            { label: "2021", value: "2021" },
-            { label: "2021", value: "2021" },
-          ]}
-          onChange={(value) => setAcademicYear(value)}
-        /> */}
 
         <ActionButtonField
           disabled={!canSubmit}
@@ -294,11 +297,12 @@ export default function Students(props) {
             valueGetter: (item) => convertISODateToDate(item?.dob),
           },
           {
-            id: "studentNumber",
-            label: "Student Number",
+            id: "level",
+            label: "Student Level",
             customRender: true,
-            valueGetter: (item) => item?.studentNumber,
+            valueGetter: (item) => item?.level,
           },
+
           {
             id: "action",
             label: "Action",

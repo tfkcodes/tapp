@@ -1,9 +1,9 @@
-exports * as
-ConfigurationRoutes
-from
-"./ConfigurationRoutes";
+exports * as;
+ConfigurationRoutes;
+from;
+("./ConfigurationRoutes");
 
-exports * as
-EmployeeRoutes
-from
-"./EmployeeRoutes";
+exports * as;
+EmployeeRoutes;
+from;
+("./EmployeeRoutes");

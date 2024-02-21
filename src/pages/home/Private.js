@@ -17,6 +17,7 @@ import { FeesRoutes } from "../../routes/FeesRoutes";
 import Notification from "../setup/Notification";
 import Library from "../library/Library";
 import { LibraryRoutes } from "../../routes/LibraryRoutes";
+import { NotificationRoutes } from "../../routes/NotificationRoutes";
 
 export default function Private(props) {
   const navigate = useNavigate();
@@ -84,6 +85,11 @@ export default function Private(props) {
           exact={true}
           path={"/configuration/*"}
           element={<TabLayout component={ConfigurationRoutes} />}
+        />
+        <Route
+          exact={true}
+          path={"/all-notification/*"}
+          element={<TabLayout component={NotificationRoutes} />}
         />
       </Routes>
     </OtherLayout>
