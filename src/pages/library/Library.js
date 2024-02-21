@@ -13,88 +13,40 @@ import Form from "../../components/Form";
 import { reportErrors } from "../../helpers";
 import ActionButtonField from "../../components/ActionButtonField";
 import SelectInputField from "../../components/SelectInputField";
-import DateTimeField from "../../components/DateTimeField";
-import useFetch from "../../hooks/useFetch";
 
-export function StudentModal(props) {
+export function LibraryBookModal(props) {
   const alert = useRef();
   const form = useRef();
 
   const nameInput = useRef();
 
-  const emailInput = useRef();
-  const phoneInput = useRef();
+  const authorInput = useRef();
+  const locationInput = useRef();
   const genderInput = useRef();
-  const dobInput = useRef();
-  const programIdInput = useRef();
   const levelInput = useRef();
-  const academicYearInput = useRef();
+  const copiesInput = useRef();
 
   const [name, setName] = useState(props?.data?.name || undefined);
   const [canSubmit, setCanSubmit] = useState(true);
-  const [email, setEmail] = useState(props?.data?.email || "");
-  const [phone, setPhone] = useState(props?.data?.phone || "");
-  const [programName, setProgramName] = useState();
-  const [academicYearName, setAcademicYearName] = useState();
-  const [academicYearStartDate, setAcademicYearStartDate] = useState("");
-  const [academicYearEndDate, setAcademicYearEndDate] = useState("");
-
-  const [programId, setProgramId] = useState(
-    props?.data?.programId || undefined
-  );
-  const [academicYearId, setAcademicYearId] = useState(
-    props?.data?.academicYearId || undefined
-  );
-
-  const [dob, setDob] = useState(props?.data?.dob || "");
+  const [author, setAuthor] = useState(props?.data?.author || "");
+  const [location, setLocation] = useState(props?.data?.location || "");
   const [gender, setGender] = useState(props?.data?.gender || "");
-
   const [educationLevel, setLevel] = useState(props?.data?.level || "");
-  const { data: programs } = useFetch(
-    "api/setup/program",
-    {
-      page: 1,
-      limit: 25,
-      name: programName,
-    },
-    true,
-    [],
-    (response) =>
-      response.data.data.map((e) => {
-        return { value: e.departmentId, label: e.name, ...e };
-      })
-  );
+  const [copies, setCopies] = useState(props?.data?.copies || "");
 
-  const { data: academicYears } = useFetch(
-    "api/setup/academic-year",
-    {
-      page: 1,
-      limit: 25,
-      name: academicYearName,
-    },
-    true,
-    [],
-    (response) =>
-      response.data.data.map((e) => {
-        return {
-          value: e.academicYearId,
-          label: e.name,
-          startDate: e.startDate,
-          endDate: e.endDate,
-          ...e,
-        };
-      })
-  );
   const ModalForm = () => {
+    const copiesNumber = parseInt(copies);
+    if (isNaN(copiesNumber)) {
+      alert.current.showError("Copies must be a valid number.");
+      return;
+    }
     let data = {
       name,
-      phone,
-      email,
+      author,
+      location,
       gender,
-
-      dob,
-      scheme: "Student",
       level: educationLevel,
+      copies: copiesNumber,
     };
     if (form.current.validate()) {
       setCanSubmit(false);
@@ -115,7 +67,7 @@ export function StudentModal(props) {
           });
       } else {
         window.axios
-          .post(`${BASE_URL}api/student/register-student`, data)
+          .post(`${BASE_URL}api/library/add-library-book`, data)
           .then((response) => {
             alert.current.showSuccess("Create Successfully.");
             setCanSubmit(true);
@@ -138,49 +90,25 @@ export function StudentModal(props) {
       <Form ref={form}>
         <TextInputField
           ref={nameInput}
-          label={"Full Name"}
+          label={"Book Name"}
           required={true}
           value={name}
           onChange={(value) => setName(value)}
         />
         <TextInputField
-          ref={phoneInput}
-          label={"Phone number"}
+          ref={authorInput}
+          label={"Book Author"}
           required={true}
-          value={phone}
-          onChange={(value) => setPhone(value)}
+          value={author}
+          onChange={(value) => setAuthor(value)}
         />
+
         <TextInputField
-          ref={emailInput}
-          label={"Email address"}
+          ref={locationInput}
+          label={"Book Location"}
           required={true}
-          value={email}
-          onChange={(value) => setEmail(value)}
-        />
-        <SelectInputField
-          ref={programIdInput}
-          label={"Program"}
-          required={true}
-          options={programs}
-          value={programId}
-          onKeyDown={(value) => setProgramName(value)}
-          onChange={(value) => setProgramId(value)}
-        />
-        <SelectInputField
-          ref={academicYearInput}
-          label={"Adamic Year"}
-          required={true}
-          options={academicYears}
-          value={academicYearId}
-          onKeyDown={(value) => setAcademicYearName(value)}
-          onChange={(value) => setAcademicYearId(value)}
-        />
-        <DateTimeField
-          ref={dobInput}
-          label={"Date of Birth"}
-          required={true}
-          value={dob}
-          onChange={(value) => setDob(value)}
+          value={location}
+          onChange={(value) => setLocation(value)}
         />
         <SelectInputField
           ref={genderInput}
@@ -205,19 +133,13 @@ export function StudentModal(props) {
           ]}
           onChange={(value) => setLevel(value)}
         />
-        {/* <SelectInputField
-          ref={academicYearInput}
-          label={"Academic Year"}
+        <TextInputField
+          ref={copiesInput}
+          label={"Total Copies"}
           required={true}
-          options={[
-            { label: "2020", value: "2020" },
-            { label: "2020", value: "2020" },
-            { label: "2021", value: "2021" },
-            { label: "2021", value: "2021" },
-          ]}
-          onChange={(value) => setAcademicYear(value)}
-        /> */}
-
+          value={copies}
+          onChange={(value) => setCopies(value)}
+        />
         <ActionButtonField
           disabled={!canSubmit}
           color={"primary"}
@@ -228,15 +150,18 @@ export function StudentModal(props) {
     </Box>
   );
 }
-export default function Students(props) {
+
+export function LibraryBooks(props) {
   const alert = useRef();
   const navigate = useNavigate();
   const modal = useRef();
   const [checked, setChecked] = useState();
   const [params, setParams] = useState({
     name: undefined,
-    phone: undefined,
-    email: undefined,
+    author: undefined,
+    level: undefined,
+    location: undefined,
+    copies: undefined,
     refresh: true,
   });
 
@@ -244,13 +169,12 @@ export default function Students(props) {
     setChecked(event.target.checked);
   };
 
-  const StudentsModal = (data = {}) => {
+  const LibraryBookModals = (data = {}) => {
     let component = (
-      <StudentModal modal={modal} refresh={refresh} data={data} />
+      <LibraryBookModal modal={modal} refresh={refresh} data={data} />
     );
-    modal.current.show("Students", component, "50%");
+    modal.current.show("Library Books", component, "50%");
   };
-
   const refresh = () => {
     setParams({ ...params, refresh: !params.refresh });
   };
@@ -258,46 +182,47 @@ export default function Students(props) {
   return (
     <Box>
       <HeaderDisplay
-        title={"Students"}
+        title={"Library Books"}
         actionButton={true}
-        label={"Add Student"}
-        onClick={() => StudentsModal()}
+        label={"Add Book"}
+        onClick={() => LibraryBookModals()}
       />
       <AlertBar ref={alert} />
       <Table
         title={""}
-        url={"api/student/student"}
+        url={"api/library/books"}
         params={params}
         columns={[
           {
             id: "name",
-            label: "Full Name",
+            label: "Book Name",
             customRender: true,
             valueGetter: (item) => capitalize(item?.name),
           },
           {
-            id: "gender",
-            label: "Gender",
+            id: "author",
+            label: "Book Author",
             customRender: true,
-            valueGetter: (item) => item?.gender,
+            valueGetter: (item) => item?.author,
           },
           {
-            id: "phone",
-            label: "Phone",
+            id: "level",
+            label: "Book Level",
             customRender: true,
-            valueGetter: (item) => item?.phone,
+            valueGetter: (item) => item?.level,
           },
           {
-            id: "dob",
-            label: "Date of Birth",
+            id: "location",
+            label: "Book Location",
             customRender: true,
-            valueGetter: (item) => convertISODateToDate(item?.dob),
+            valueGetter: (item) => item?.location,
           },
+
           {
-            id: "studentNumber",
-            label: "Student Number",
+            id: "copies",
+            label: "Copies",
             customRender: true,
-            valueGetter: (item) => item?.studentNumber,
+            valueGetter: (item) => item?.copies,
           },
           {
             id: "action",
@@ -312,7 +237,7 @@ export default function Students(props) {
             ),
           },
         ]}
-        onRawClick={(item) => navigate(`details/${item?.userId}`)}
+        onRawClick={() => {}}
       />
       <ModalPage ref={modal} />
     </Box>

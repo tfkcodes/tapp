@@ -14,87 +14,32 @@ import { reportErrors } from "../../helpers";
 import ActionButtonField from "../../components/ActionButtonField";
 import SelectInputField from "../../components/SelectInputField";
 import DateTimeField from "../../components/DateTimeField";
-import useFetch from "../../hooks/useFetch";
 
-export function StudentModal(props) {
+export function LibraryUserModal(props) {
   const alert = useRef();
   const form = useRef();
 
   const nameInput = useRef();
 
-  const emailInput = useRef();
-  const phoneInput = useRef();
-  const genderInput = useRef();
-  const dobInput = useRef();
-  const programIdInput = useRef();
-  const levelInput = useRef();
-  const academicYearInput = useRef();
+  const regNoInput = useRef();
+  const educationLevelInput = useRef();
+  const timeInInput = useRef();
+  const timeOutInput = useRef();
 
   const [name, setName] = useState(props?.data?.name || undefined);
   const [canSubmit, setCanSubmit] = useState(true);
-  const [email, setEmail] = useState(props?.data?.email || "");
-  const [phone, setPhone] = useState(props?.data?.phone || "");
-  const [programName, setProgramName] = useState();
-  const [academicYearName, setAcademicYearName] = useState();
-  const [academicYearStartDate, setAcademicYearStartDate] = useState("");
-  const [academicYearEndDate, setAcademicYearEndDate] = useState("");
-
-  const [programId, setProgramId] = useState(
-    props?.data?.programId || undefined
-  );
-  const [academicYearId, setAcademicYearId] = useState(
-    props?.data?.academicYearId || undefined
-  );
-
-  const [dob, setDob] = useState(props?.data?.dob || "");
-  const [gender, setGender] = useState(props?.data?.gender || "");
-
+  const [regNo, setRegNo] = useState(props?.data?.regNo || "");
+  const [timeIn, setTimeIn] = useState(props?.data?.timeIn || "");
+  const [timeOut, setTimeOut] = useState(props?.data?.timeOut || "");
   const [educationLevel, setLevel] = useState(props?.data?.level || "");
-  const { data: programs } = useFetch(
-    "api/setup/program",
-    {
-      page: 1,
-      limit: 25,
-      name: programName,
-    },
-    true,
-    [],
-    (response) =>
-      response.data.data.map((e) => {
-        return { value: e.departmentId, label: e.name, ...e };
-      })
-  );
 
-  const { data: academicYears } = useFetch(
-    "api/setup/academic-year",
-    {
-      page: 1,
-      limit: 25,
-      name: academicYearName,
-    },
-    true,
-    [],
-    (response) =>
-      response.data.data.map((e) => {
-        return {
-          value: e.academicYearId,
-          label: e.name,
-          startDate: e.startDate,
-          endDate: e.endDate,
-          ...e,
-        };
-      })
-  );
   const ModalForm = () => {
     let data = {
       name,
-      phone,
-      email,
-      gender,
-
-      dob,
-      scheme: "Student",
+      regNo,
       level: educationLevel,
+      timeIn,
+      timeOut,
     };
     if (form.current.validate()) {
       setCanSubmit(false);
@@ -115,7 +60,7 @@ export function StudentModal(props) {
           });
       } else {
         window.axios
-          .post(`${BASE_URL}api/student/register-student`, data)
+          .post(`${BASE_URL}api/library/add-library-user`, data)
           .then((response) => {
             alert.current.showSuccess("Create Successfully.");
             setCanSubmit(true);
@@ -144,56 +89,15 @@ export function StudentModal(props) {
           onChange={(value) => setName(value)}
         />
         <TextInputField
-          ref={phoneInput}
-          label={"Phone number"}
+          ref={regNoInput}
+          label={"Registration Number"}
           required={true}
-          value={phone}
-          onChange={(value) => setPhone(value)}
+          value={regNo}
+          onChange={(value) => setRegNo(value)}
         />
-        <TextInputField
-          ref={emailInput}
-          label={"Email address"}
-          required={true}
-          value={email}
-          onChange={(value) => setEmail(value)}
-        />
+
         <SelectInputField
-          ref={programIdInput}
-          label={"Program"}
-          required={true}
-          options={programs}
-          value={programId}
-          onKeyDown={(value) => setProgramName(value)}
-          onChange={(value) => setProgramId(value)}
-        />
-        <SelectInputField
-          ref={academicYearInput}
-          label={"Adamic Year"}
-          required={true}
-          options={academicYears}
-          value={academicYearId}
-          onKeyDown={(value) => setAcademicYearName(value)}
-          onChange={(value) => setAcademicYearId(value)}
-        />
-        <DateTimeField
-          ref={dobInput}
-          label={"Date of Birth"}
-          required={true}
-          value={dob}
-          onChange={(value) => setDob(value)}
-        />
-        <SelectInputField
-          ref={genderInput}
-          label={"Gender"}
-          required={true}
-          options={[
-            { label: "Male", value: "Male" },
-            { label: "Female", value: "Female" },
-          ]}
-          onChange={(value) => setGender(value)}
-        />
-        <SelectInputField
-          ref={levelInput}
+          ref={educationLevelInput}
           label={"Education Level"}
           required={true}
           options={[
@@ -205,19 +109,22 @@ export function StudentModal(props) {
           ]}
           onChange={(value) => setLevel(value)}
         />
-        {/* <SelectInputField
-          ref={academicYearInput}
-          label={"Academic Year"}
-          required={true}
-          options={[
-            { label: "2020", value: "2020" },
-            { label: "2020", value: "2020" },
-            { label: "2021", value: "2021" },
-            { label: "2021", value: "2021" },
-          ]}
-          onChange={(value) => setAcademicYear(value)}
-        /> */}
 
+        <DateTimeField
+          ref={timeInInput}
+          label={"Time In"}
+          required={true}
+          value={timeIn}
+          onChange={(value) => setTimeIn(value)}
+        />
+
+        <DateTimeField
+          ref={timeOutInput}
+          label={"Time Out"}
+          required={true}
+          value={timeOut}
+          onChange={(value) => setTimeOut(value)}
+        />
         <ActionButtonField
           disabled={!canSubmit}
           color={"primary"}
@@ -228,15 +135,18 @@ export function StudentModal(props) {
     </Box>
   );
 }
-export default function Students(props) {
+
+export function LibraryUsers(props) {
   const alert = useRef();
   const navigate = useNavigate();
   const modal = useRef();
   const [checked, setChecked] = useState();
   const [params, setParams] = useState({
     name: undefined,
-    phone: undefined,
-    email: undefined,
+    author: undefined,
+    level: undefined,
+    location: undefined,
+    copies: undefined,
     refresh: true,
   });
 
@@ -244,13 +154,12 @@ export default function Students(props) {
     setChecked(event.target.checked);
   };
 
-  const StudentsModal = (data = {}) => {
+  const LibraryUserModals = (data = {}) => {
     let component = (
-      <StudentModal modal={modal} refresh={refresh} data={data} />
+      <LibraryUserModal modal={modal} refresh={refresh} data={data} />
     );
-    modal.current.show("Students", component, "50%");
+    modal.current.show("Library Users", component, "50%");
   };
-
   const refresh = () => {
     setParams({ ...params, refresh: !params.refresh });
   };
@@ -258,46 +167,46 @@ export default function Students(props) {
   return (
     <Box>
       <HeaderDisplay
-        title={"Students"}
+        title={"Library Users"}
         actionButton={true}
-        label={"Add Student"}
-        onClick={() => StudentsModal()}
+        label={"Add Library User"}
+        onClick={() => LibraryUserModals()}
       />
       <AlertBar ref={alert} />
       <Table
         title={""}
-        url={"api/student/student"}
+        url={"api/library/library-users"}
         params={params}
         columns={[
           {
             id: "name",
-            label: "Full Name",
+            label: "Full Name ",
             customRender: true,
             valueGetter: (item) => capitalize(item?.name),
           },
           {
-            id: "gender",
-            label: "Gender",
+            id: "regNo",
+            label: "Registration Number",
             customRender: true,
-            valueGetter: (item) => item?.gender,
+            valueGetter: (item) => item?.regNo,
           },
           {
-            id: "phone",
-            label: "Phone",
+            id: "level",
+            label: "Education Level",
             customRender: true,
-            valueGetter: (item) => item?.phone,
+            valueGetter: (item) => item?.level,
           },
           {
-            id: "dob",
-            label: "Date of Birth",
+            id: "timeIn",
+            label: "Time In",
             customRender: true,
-            valueGetter: (item) => convertISODateToDate(item?.dob),
+            valueGetter: (item) => item?.timeIn,
           },
           {
-            id: "studentNumber",
-            label: "Student Number",
+            id: "timeOut",
+            label: "Time Out",
             customRender: true,
-            valueGetter: (item) => item?.studentNumber,
+            valueGetter: (item) => item?.timeOut,
           },
           {
             id: "action",

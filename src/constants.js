@@ -1,6 +1,8 @@
 export const drawerWidth = 250;
 export const APP_NAME = "Customer-Billing";
-export const BASE_URL = "http://192.168.150.130:4000/";
+// export const BASE_URL = "http://192.168.150.130:4000/";
+export const BASE_URL = "http://127.0.0.1:4000/";
+
 // "proxy": "http://88.198.102.80:30003/",
 //     "homepage": "http://88.198.102.80:3005"
 
