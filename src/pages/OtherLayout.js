@@ -1,4 +1,4 @@
-import { Box, Container, Typography } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import * as React from "react";
 import { DoubleArrowOutlined } from "@mui/icons-material";
 import PrivateHeader from "./PrivateHeader";
@@ -38,6 +38,11 @@ export default function OtherLayout(props) {
             title: "Library Management",
             icon: <DoubleArrowOutlined />,
             route: "/private/library",
+          },
+          {
+            title: "Hostel Management",
+            icon: <DoubleArrowOutlined />,
+            route: "/private/hostel",
           },
           {
             title: "Settings",

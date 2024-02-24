@@ -55,7 +55,9 @@ export default function TeachingNotifications(props) {
             valueGetter: (item) => item?.message,
           },
         ]}
-        onRawClick={(item) => navigate(`/private/courses-details/${item.id}`)}
+        onRawClick={(item) =>
+          navigate(`/private/notification-details/${item.id}`)
+        }
       />
       <ModalPage ref={modal} />
     </Box>

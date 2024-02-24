@@ -15,9 +15,9 @@ import Students from "../students/Students";
 import StudentDetails from "../students/StudentDetails";
 import { FeesRoutes } from "../../routes/FeesRoutes";
 import Notification from "../setup/Notification";
-import Library from "../library/Library";
 import { LibraryRoutes } from "../../routes/LibraryRoutes";
 import { NotificationRoutes } from "../../routes/NotificationRoutes";
+import { HostelRoutes } from "../../routes/HostelRoutes";
 
 export default function Private(props) {
   const navigate = useNavigate();
@@ -80,6 +80,11 @@ export default function Private(props) {
           exact={true}
           path={"library"}
           element={<TabLayout component={LibraryRoutes} />}
+        />
+        <Route
+          exact={true}
+          path={"hostel"}
+          element={<TabLayout component={HostelRoutes} />}
         />
         <Route
           exact={true}
