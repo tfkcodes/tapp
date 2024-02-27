@@ -18,6 +18,7 @@ import Notification from "../setup/Notification";
 import { LibraryRoutes } from "../../routes/LibraryRoutes";
 import { NotificationRoutes } from "../../routes/NotificationRoutes";
 import { HostelRoutes } from "../../routes/HostelRoutes";
+import { AttendanceRoutes } from "../../routes/AttendanceRoutes";
 
 export default function Private(props) {
   const navigate = useNavigate();
@@ -80,6 +81,11 @@ export default function Private(props) {
           exact={true}
           path={"library"}
           element={<TabLayout component={LibraryRoutes} />}
+        />
+        <Route
+          exact={true}
+          path={"attendance"}
+          element={<TabLayout component={AttendanceRoutes} />}
         />
         <Route
           exact={true}

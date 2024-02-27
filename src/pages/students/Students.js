@@ -27,6 +27,7 @@ export function StudentModal(props) {
   const genderInput = useRef();
   const dobInput = useRef();
   const programInput = useRef();
+  const regNoInput = useRef();
   const levelInput = useRef();
   const academicYearInput = useRef();
 
@@ -34,8 +35,7 @@ export function StudentModal(props) {
   const [canSubmit, setCanSubmit] = useState(true);
   const [email, setEmail] = useState(props?.data?.email || "");
   const [phone, setPhone] = useState(props?.data?.phone || "");
-
-  const [programName, setProgramName] = useState();
+  const [regNo, setRegNo] = useState(props?.data?.regNo || "");
 
   const [academicYearName, setAcademicYearName] = useState();
   const [academicYears, setAcademicYears] = useState([]);
@@ -101,6 +101,7 @@ export function StudentModal(props) {
       gender,
       programId,
       academicYearId,
+      regNo,
       dob,
       scheme: "Student",
       level: educationLevel,
@@ -167,11 +168,11 @@ export function StudentModal(props) {
           onChange={(value) => setEmail(value)}
         />
         <TextInputField
-          ref={emailInput}
+          ref={regNoInput}
           label={"Student Number"}
           required={true}
-          value={email}
-          onChange={(value) => setEmail(value)}
+          value={regNo}
+          onChange={(value) => setRegNo(value)}
         />
         <SelectInputField
           ref={programInput}

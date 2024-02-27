@@ -45,6 +45,11 @@ export default function OtherLayout(props) {
             route: "/private/hostel",
           },
           {
+            title: "Attendance",
+            icon: <DoubleArrowOutlined />,
+            route: "/private/attendance",
+          },
+          {
             title: "Settings",
             icon: <DoubleArrowOutlined />,
             route: "/private/configuration",
