@@ -25,10 +25,7 @@ const sidebar = {
     { title: "Events", url: "#" },
     { title: "Contact Us", url: "#" },
   ],
-  social: [
-    { name: "Facebook", icon: "FacebookIcon" },
-    { name: "Twitter", icon: "TwitterIcon" },
-  ],
+  social: [],
 };
 
 export default function LandingPage(props) {

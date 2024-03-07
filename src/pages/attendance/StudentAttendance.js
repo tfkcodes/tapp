@@ -9,11 +9,7 @@ import Form from "../../components/Form";
 import { reportErrors } from "../../helpers";
 import ActionButtonField from "../../components/ActionButtonField";
 import SelectInputField from "../../components/SelectInputField";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
-import Switch from "@mui/material/Switch";
-import Confirmation from "../../components/Confirmation";
 
 export function StudentAttendanceModal({ data, modal, refresh }) {
   const alert = useRef();
@@ -247,7 +243,6 @@ export function StudentAttendance(props) {
           flexDirection: "row",
           p: 1,
           m: 1,
-          flexWrap: "nowrap",
         }}
       >
         <SelectInputField

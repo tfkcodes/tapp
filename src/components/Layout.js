@@ -91,11 +91,11 @@ export default function Layout({ children, user }) {
         <Toolbar>
           <Typography
             variant="h7"
-            noWrap
+            nowrap="true"
             component="div"
             sx={{ flexGrow: 1 }}
           ></Typography>
-          <Typography variant="h7" noWrap component="div">
+          <Typography variant="h7" nowrap="true" component="div">
             {capitalize(user?.name || "")}
           </Typography>
         </Toolbar>
