@@ -1,16 +1,10 @@
 export const drawerWidth = 250;
 export const APP_NAME = "Customer-Billing";
 // export const BASE_URL = "http://192.168.150.130:4000/";
-export const BASE_URL = "https://64.23.182.248/";
+export const BASE_URL = "http://64.23.182.248/";
 // export const BASE_URL = "http://64.23.182.248/";
 
 // export const BASE_URL = "http://localhost:4000/";
-
-// "proxy": "http://88.198.102.80:30003/",
-//     "homepage": "http://88.198.102.80:3005"
-
-// "proxy": "http://192.241.129.103:30006/",
-//     "homepage": "http://88.198.102.80:3005"
 
 export const CONSTANT_OPTIONS = [
   { label: "Earning", value: "earning" },
