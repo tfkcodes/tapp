@@ -10,6 +10,7 @@ import { reportErrors } from "../../helpers";
 import ActionButtonField from "../../components/ActionButtonField";
 import SelectInputField from "../../components/SelectInputField";
 import { useNavigate } from "react-router-dom";
+import Confirmation from "../../components/Confirmation";
 
 export function StudentAttendanceModal({ data, modal, refresh }) {
   const alert = useRef();
