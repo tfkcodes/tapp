@@ -128,7 +128,7 @@ export default function Register(props) {
                 <AlertBar ref={alert} />
                 <Form ref={form}>
                   <Grid container spacing={2}>
-                    <Grid item xs={12}>
+                    {/* <Grid item xs={12}>
                       <Stack direction={"row"}>
                         <RadioInputField
                           label={"Student"}
@@ -149,7 +149,7 @@ export default function Register(props) {
                           onChange={handleChange}
                         />
                       </Stack>
-                    </Grid>
+                    </Grid> */}
                     <Grid item xs={12}>
                       <TextInputField
                         ref={fullNameInput}
