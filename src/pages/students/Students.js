@@ -146,82 +146,91 @@ export function StudentModal(props) {
     <Box>
       <AlertBar ref={alert} />
       <Form ref={form}>
-        <TextInputField
-          ref={nameInput}
-          label={"Full Name"}
-          required={true}
-          value={name}
-          onChange={(value) => setName(value)}
-        />
-        <TextInputField
-          ref={phoneInput}
-          label={"Phone number"}
-          required={true}
-          value={phone}
-          onChange={(value) => setPhone(value)}
-        />
-        <TextInputField
-          ref={emailInput}
-          label={"Email address"}
-          required={true}
-          value={email}
-          onChange={(value) => setEmail(value)}
-        />
-        <TextInputField
-          ref={regNoInput}
-          label={"Student Number"}
-          required={true}
-          value={regNo}
-          onChange={(value) => setRegNo(value)}
-        />
-        <SelectInputField
-          ref={programInput}
-          required={true}
-          label={"Program"}
-          options={programs}
-          value={programId}
-          onChange={(value) => setProgramId(value)}
-        />
-        <SelectInputField
-          ref={academicYearInput}
-          label={"Adamic Year"}
-          required={true}
-          options={academicYears}
-          value={academicYearId}
-          onKeyDown={(value) => setAcademicYearName(value)}
-          onChange={(value) => setAcademicYearId(value)}
-        />
-        <DateTimeField
-          ref={dobInput}
-          label={"Date of Birth"}
-          required={true}
-          value={dob}
-          onChange={(value) => setDob(value)}
-        />
-        <SelectInputField
-          ref={genderInput}
-          label={"Gender"}
-          required={true}
-          options={[
-            { label: "Male", value: "Male" },
-            { label: "Female", value: "Female" },
-          ]}
-          onChange={(value) => setGender(value)}
-        />
-        <SelectInputField
-          ref={levelInput}
-          label={"Education Level"}
-          required={true}
-          options={[
-            { label: "Nursery", value: "Nursery" },
-            { label: "Primary", value: "Primary" },
-            { label: "Secondary", value: "Secondary" },
-            { label: "A Level", value: "Advanced" },
-            { label: "Collage / University", value: "Collage" },
-          ]}
-          onChange={(value) => setLevel(value)}
-        />
+        <Box display="flex" flexDirection="row" justifyContent="space-between">
+          {/* Left column */}
+          <Box width="48%">
+            <TextInputField
+              ref={nameInput}
+              label={"Full Name"}
+              required={true}
+              value={name}
+              onChange={(value) => setName(value)}
+            />
+            <TextInputField
+              ref={phoneInput}
+              label={"Phone number"}
+              required={true}
+              value={phone}
+              onChange={(value) => setPhone(value)}
+            />
+            <TextInputField
+              ref={emailInput}
+              label={"Email address"}
+              required={true}
+              value={email}
+              onChange={(value) => setEmail(value)}
+            />
+            <TextInputField
+              ref={regNoInput}
+              label={"Student Number"}
+              required={true}
+              value={regNo}
+              onChange={(value) => setRegNo(value)}
+            />
+          </Box>
 
+          {/* Right column */}
+          <Box width="48%">
+            <SelectInputField
+              ref={programInput}
+              required={true}
+              label={"Program"}
+              options={programs}
+              value={programId}
+              onChange={(value) => setProgramId(value)}
+            />
+            <SelectInputField
+              ref={academicYearInput}
+              label={"Academic Year"}
+              required={true}
+              options={academicYears}
+              value={academicYearId}
+              onChange={(value) => setAcademicYearId(value)}
+            />
+            <DateTimeField
+              ref={dobInput}
+              label={"Date of Birth"}
+              required={true}
+              value={dob}
+              onChange={(value) => setDob(value)}
+            />
+            <SelectInputField
+              ref={genderInput}
+              label={"Gender"}
+              required={true}
+              options={[
+                { label: "Male", value: "Male" },
+                { label: "Female", value: "Female" },
+              ]}
+              onChange={(value) => setGender(value)}
+            />
+            <SelectInputField
+              ref={levelInput}
+              label={"Education Level"}
+              required={true}
+              options={[
+                { label: "Nursery", value: "Nursery" },
+                { label: "Primary", value: "Primary" },
+                { label: "Secondary", value: "Secondary" },
+                { label: "A Level", value: "Advanced" },
+                { label: "College / University", value: "College" },
+              ]}
+              onChange={(value) => setLevel(value)}
+            />
+          </Box>
+        </Box>
+
+        {/* Action button */}
         <ActionButtonField
           disabled={!canSubmit}
           color={"primary"}
