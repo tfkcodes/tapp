@@ -82,7 +82,7 @@ export default function Register(props) {
       setIsSubmitting(true);
       alert.current.showProgress("");
       window.axios
-        .post(`${BASE_URL}api/authentication/create-account`, data)
+        .post(`${BASE_URL}api/auth/create-account`, data)
         .then((response) => {
           alert.current.hide();
           setIsSubmitting(false);
