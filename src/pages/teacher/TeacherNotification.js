@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import HeaderDisplay from "../../components/HeaderDisplay";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import AlertBar from "../../components/AlertBar";
 import Table from "../../components/Tables";
 import { capitalize, numberFormat } from "../../helpers";
@@ -12,10 +12,15 @@ export default function TeachingNotifications(props) {
   const alert = useRef();
   const modal = useRef();
   const navigate = useNavigate();
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   const [params, setParams] = useState({
     name: undefined,
-    phone: undefined,
-    email: undefined,
+    capacity: undefined,
+    level: undefined,
+    location: undefined,
+    copies: undefined,
     refresh: true,
   });
 
@@ -23,39 +28,35 @@ export default function TeachingNotifications(props) {
     setParams({ ...params, refresh: !params.refresh });
   };
 
-  const CourseModal = () => {
-    let component = <AddCourseModal modal={modal} refresh={refresh} />;
-    modal.current.show("Course", component, "50%");
-  };
-
   return (
     <Box>
       <HeaderDisplay
-        title={"School Notifications"}
+        title={"Teacher Notifications"}
         actionButton={true}
-        label={"Course"}
-        onClick={() => CourseModal()}
+        label={"New Notification"}
+        onClick={() => {}}
       />
       <AlertBar ref={alert} />
       <Table
         title={""}
-        url={"api/notification"}
+        url={"api/notification/employee"}
+        loading={loading}
         params={params}
         columns={[
           {
             id: "title",
             label: "Title",
             customRender: true,
-            valueGetter: (item) => capitalize(item?.title || ""),
+            valueGetter: (item) => capitalize(item?.data.title || ""),
           },
           {
             id: "message",
             label: "Message",
             customRender: true,
-            valueGetter: (item) => item?.message,
+            valueGetter: (item) => item?.data.message,
           },
         ]}
-        onRawClick={(item) =>
+        onRowClick={(item) =>
           navigate(`/private/notification-details/${item.id}`)
         }
       />

@@ -30,7 +30,7 @@ export default function Private(props) {
 
   const loadUser = () => {
     window.axios
-      .get(`${BASE_URL}api/authentication/user`)
+      .get(`${BASE_URL}api/auth/user`)
       .then((response) => {
         if (!response.data) {
           navigate("/");

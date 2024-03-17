@@ -130,12 +130,12 @@ export default function Register(props) {
                   <Grid container spacing={2}>
                     <Grid item xs={12}>
                       <Stack direction={"row"}>
-                        <RadioInputField
+                        {/* <RadioInputField
                           label={"Student"}
                           value={"Student"}
                           checked={selectedValue === "Student"}
                           onChange={handleChange}
-                        />
+                        /> */}
                         <RadioInputField
                           label={"Teacher"}
                           value={"Teacher"}

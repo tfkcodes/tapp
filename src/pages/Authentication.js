@@ -51,7 +51,7 @@ export default function Authentication(props) {
       setIsSubmitting(true);
       alert.current.showProgress("");
       window.axios
-        .post(`${BASE_URL}api/authentication/sign-in`, data)
+        .post(`${BASE_URL}api/auth/sign-in`, data)
         .then((response) => {
           alert.current.hide();
           setIsSubmitting(false);

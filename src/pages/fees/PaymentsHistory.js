@@ -18,19 +18,32 @@ export function PaymentHistoryModal(props) {
   const form = useRef();
 
   const amountInput = useRef();
+  const outstandAmountIput = useRef();
+  const annualAmountInput = useRef();
+
   const yearInput = useRef();
   const programInput = useRef();
   const feesInput = useRef();
 
-  const [amount, setAmount] = useState(props?.data?.amount || undefined);
-  const [yearId, setYearId] = useState(props?.data?.academicYearId);
+  const [paid_amount, setAmount] = useState(
+    props?.data?.paid_amount || undefined
+  );
+  const [annual_amount, setAnnualAmount] = useState(
+    props?.data?.annual_amount || undefined
+  );
+
+  const [outstand_amount, setOutstandAmount] = useState(
+    props?.data?.outstand_amount
+  );
+
+  const [studentId, setstudentId] = useState(props?.data?.userId);
   const [programId, setProgramId] = useState(props?.data?.programId);
   const [feeId, setFeeId] = useState(props?.data?.feeId);
   const [feeName, setFeeName] = useState();
   const [canSubmit, setCanSubmit] = useState(true);
 
-  const { data: years } = useFetch(
-    "api/setup/academic-year",
+  const { data: names } = useFetch(
+    "api/student/student",
     {
       page: 1,
       limit: 25,
@@ -39,7 +52,7 @@ export function PaymentHistoryModal(props) {
     [],
     (response) =>
       response.data.data.map((e) => {
-        return { value: e.id, label: e.description, ...e };
+        return { value: e.userId, label: e.name, ...e };
       })
   );
 
@@ -75,10 +88,12 @@ export function PaymentHistoryModal(props) {
 
   const ModalForm = () => {
     let data = {
+      annual_amount,
+      paid_amount,
       feeId,
-      academicYearId: yearId,
+      userId: studentId,
       programId,
-      amount,
+      outstand_amount,
     };
     if (form.current.validate()) {
       setCanSubmit(false);
@@ -99,8 +114,9 @@ export function PaymentHistoryModal(props) {
           });
       } else {
         window.axios
-          .post(`${BASE_URL}api/setup/fees-assigment`, data)
+          .post(`${BASE_URL}api/setup/fee-payment-history`, data)
           .then((response) => {
+            console.log(data);
             alert.current.showSuccess("Create Successfully.");
             setCanSubmit(true);
             setTimeout(() => {
@@ -110,6 +126,7 @@ export function PaymentHistoryModal(props) {
           })
           .catch((error) => {
             setCanSubmit(true);
+            console.log(error);
             reportErrors(alert.current, error);
           });
       }
@@ -126,9 +143,9 @@ export function PaymentHistoryModal(props) {
               ref={yearInput}
               required={true}
               label={"Student Name"}
-              options={years}
-              value={yearId}
-              onChange={(value) => setYearId(value)}
+              options={names}
+              value={studentId}
+              onChange={(value) => setstudentId(value)}
             />
             <SelectInputField
               ref={feesInput}
@@ -144,7 +161,7 @@ export function PaymentHistoryModal(props) {
               label={"Paid Amount"}
               type={"number"}
               required={true}
-              value={amount}
+              value={paid_amount}
               onChange={(value) => setAmount(value)}
             />
           </Box>
@@ -159,20 +176,20 @@ export function PaymentHistoryModal(props) {
             />
 
             <TextInputField
-              ref={amountInput}
+              ref={annualAmountInput}
               label={"Annual Fee amount"}
               type={"number"}
               required={true}
-              value={amount}
-              onChange={(value) => setAmount(value)}
+              value={annual_amount}
+              onChange={(value) => setAnnualAmount(value)}
             />
             <TextInputField
-              ref={amountInput}
-              label={"Paid amount"}
+              ref={outstandAmountIput}
+              label={"Oustand amount"}
               type={"number"}
               required={true}
-              value={amount}
-              onChange={(value) => setAmount(value)}
+              value={outstand_amount}
+              onChange={(value) => setOutstandAmount(value)}
             />
           </Box>
         </Box>
@@ -217,7 +234,7 @@ export default function PaymentHistory(props) {
       <AlertBar ref={alert} />
       <Table
         title={""}
-        url={"api/setup/fees-assigment"}
+        url={"api/setup/fee-payment-history"}
         params={params}
         columns={[
           {

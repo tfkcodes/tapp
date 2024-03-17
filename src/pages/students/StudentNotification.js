@@ -1,38 +1,59 @@
-import {Box} from "@mui/material";
+import { Box } from "@mui/material";
 import HeaderDisplay from "../../components/HeaderDisplay";
+import { useRef, useState } from "react";
 import AlertBar from "../../components/AlertBar";
-import Editor from "../../components/Editor";
+import Table from "../../components/Tables";
+import { capitalize, numberFormat } from "../../helpers";
 import ModalPage from "../../components/ModalPage";
-import {useRef, useState} from "react";
-import ActionButtonField from "../../components/ActionButtonField";
-import {NotificationsOutlined} from "@mui/icons-material";
-import * as React from "react";
+import { useNavigate } from "react-router-dom";
 
-const options = [
-    {label: "Students", value: "Students"},
-    {label: "Employee", value: "Employee"}
-];
 export default function StudentNotification(props) {
-    const modal = useRef();
-    const alert = useRef();
-    const [message, setMessage] = useState();
+  const alert = useRef();
+  const modal = useRef();
+  const navigate = useNavigate();
+  const [params, setParams] = useState({
+    name: undefined,
+    phone: undefined,
+    email: undefined,
+    refresh: true,
+  });
 
-    return (
-        <Box>
-            <HeaderDisplay
-                title={"Notification"}
-                actionButton={true}
-                label={"Notification"}
-                startIcon={<NotificationsOutlined/>}
-                onClick={() => {
-                }}
-            />
-            <AlertBar ref={alert}/>
-            <Box>
-                <Editor value={message} onChange={(value) => setMessage(value)}/>
-            </Box>
-            <ActionButtonField label={"Send Notification"}/>
-            <ModalPage ref={modal}/>
-        </Box>
-    );
+  const refresh = () => {
+    setParams({ ...params, refresh: !params.refresh });
+  };
+
+  return (
+    <Box>
+      <HeaderDisplay
+        title={"School Notifications"}
+        actionButton={true}
+        label={"New Notification"}
+        onClick={() => {}}
+      />
+      <AlertBar ref={alert} />
+      <Table
+        title={""}
+        url={"api/notification/student"}
+        params={params}
+        columns={[
+          {
+            id: "title",
+            label: "Title",
+            customRender: true,
+            valueGetter: (item) => capitalize(item?.title || ""),
+          },
+          {
+            id: "message",
+            label: "Message",
+            customRender: true,
+            valueGetter: (item) => item?.message,
+          },
+        ]}
+        onRawClick={(item) =>
+          navigate(`/private/notification-details/${item.id}`)
+        }
+      />
+      <ModalPage ref={modal} />
+    </Box>
+  );
 }

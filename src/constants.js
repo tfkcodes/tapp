@@ -1,10 +1,10 @@
 export const drawerWidth = 250;
 export const APP_NAME = "Customer-Billing";
 // export const BASE_URL = "http://192.168.150.130:4000/";
-export const BASE_URL = "https://api.tapp.co.tz/";
-// export const BASE_URL = "http://64.23.182.248/";
+// export const BASE_URL = "https://api.tapp.co.tz/";
+// // export const BASE_URL = "http://64.23.182.248/";
 
-// export const BASE_URL = "http://localhost:4000/";
+export const BASE_URL = "http://localhost:4000/";
 
 export const CONSTANT_OPTIONS = [
   { label: "Earning", value: "earning" },
